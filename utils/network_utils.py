@@ -38,9 +38,11 @@ class Network(nx.Graph):
         
 
     def define_edges(self):
+
         for i in range(self.number_of_edges):
 
-            self.add_edge(self.df['l_ipn'].values[i], self.df['r_asn'].values[i], color = 'black')
+            self.add_edge(self.df['l_ipn'].values[i], self.df['r_asn'].values[i], color = 'gray', width = .1)
+
 
     def color_network_nodes(self, date):
         df_filtered = self.df[self.df['date'] == date]
@@ -49,6 +51,8 @@ class Network(nx.Graph):
             self.nodes[node]['color'] = 'black'
             if node in df_filtered['r_asn'].values:
                 self.nodes[node]['color'] = 'blue'
+            elif node in df_filtered['l_ipn'].values:
+                self.nodes[node]['color'] = 'red'
 
 
     def color_network_edges(self, date):
@@ -61,4 +65,5 @@ class Network(nx.Graph):
             node1, node2 = df_filtered['l_ipn'][edge], df_filtered['r_asn'][edge]
 
             self[node1][node2]['color'] = 'red'
+            self[node1][node2]['width'] = 1
 
