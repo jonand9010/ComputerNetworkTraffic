@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np 
 import pandas as pd
-
+from statsmodels.distributions.empirical_distribution import ECDF
 class Network(nx.Graph):
     def __init__(self ): 
         super().__init__()
@@ -19,7 +19,7 @@ class Network(nx.Graph):
         self.node_colors = []
         self.edge_colors = []
         self.node_sizes = []
-
+        self.edge_ecdf = ECDF(self.df['f'])
         self.define_nodes(colors)
 
     def define_nodes(self, colors = ['black', 'red']):
@@ -49,7 +49,7 @@ class Network(nx.Graph):
         for node in self.node_list:
 
             self.nodes[node]['color'] = 'black'
-            if node in df_filtered['r_asn'].values:
+            if (node in df_filtered['r_asn'].values) and (node not in df_filtered['l_ipn'].values):
                 self.nodes[node]['color'] = 'blue'
             elif node in df_filtered['l_ipn'].values:
                 self.nodes[node]['color'] = 'red'
@@ -64,6 +64,23 @@ class Network(nx.Graph):
 
             node1, node2 = df_filtered['l_ipn'][edge], df_filtered['r_asn'][edge]
 
-            self[node1][node2]['color'] = 'red'
-            self[node1][node2]['width'] = 1
+            self[node1][node2]['color'] = 'blue'
+            self[node1][node2]['width'] = 2
+
+            median = np.median(self.df['f']) 
+            mean_abs_dev = np.mean( np.abs(self.df['f']- median) )
+            p_value = self.edge_ecdf(df_filtered['f'][edge])
+
+            
+
+            if p_value > 0.95:
+                
+                self[node1][node2]['color'] = 'red'
+                self[node1][node2]['width'] = np.abs( (df_filtered['f'][edge] - median)/mean_abs_dev )
+
+
+
+
+
+
 

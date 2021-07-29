@@ -8,7 +8,7 @@ def plot_timeline(network, time_period, dates, suspected_dates = []):
     fig = plt.figure()
     ax = plt.axes()
 
-    pos=nx.spring_layout(network)
+    pos=nx.spring_layout(network, k = 3 * 1/np.sqrt(network.number_of_nodes))
 
     network.__dict__.update({'pos': pos}) 
 
@@ -30,6 +30,7 @@ def plot_timeline(network, time_period, dates, suspected_dates = []):
         else:
             plt.title('Date: ' + dates[i], color = 'k')
         plt.pause(0.1)
+        input('press any key for next plot ')
 
 
     plt.show()

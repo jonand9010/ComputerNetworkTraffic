@@ -17,6 +17,8 @@ dates = df['date'].unique()
 network = Network()
 network.build_network(df)
 
+
+
 #%%
 from networkx.drawing.nx_pylab import draw_networkx_nodes, draw_networkx_edges
 from utils.plot_network_activity import plot_timeline
